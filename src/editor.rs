@@ -569,12 +569,14 @@ impl Editor {
             self.highlighter[self.ptr].edit(loc.y, line);
         } else {
             // Backspace was pressed in the middle of the line, delete the character
-            c -= 1;
-            if let Some(line) = self.doc().line(self.doc().loc().y) {
-                if let Some(ch) = line.chars().nth(c) {
-                    let loc = Loc { x: c, y: self.doc().loc().y };
-                    self.exe(Event::Delete(loc, ch.to_string()))?;
-                    self.highlighter[self.ptr].edit(loc.y, &self.doc[self.ptr].lines[loc.y]);
+            if c != 0 {
+                c -= 1;
+                if let Some(line) = self.doc().line(self.doc().loc().y) {
+                    if let Some(ch) = line.chars().nth(c) {
+                        let loc = Loc { x: c, y: self.doc().loc().y };
+                        self.exe(Event::Delete(loc, ch.to_string()))?;
+                        self.highlighter[self.ptr].edit(loc.y, &self.doc[self.ptr].lines[loc.y]);
+                    }
                 }
             }
         }
